@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Executes a program in the CWD several times for use with time(1)
+
+if [ $# -ne 1 -a $# -ne 2 ]; then
+    echo "Usage: `basename $0` [repetitions] <program>"
+    exit 1
+fi
+
+# set default values
+program=$1
+repetitions=1000
+
+# set the number of repetitions if given
+if [ $# -eq 2 ]; then
+    repetitions=$1
+    program=$2
+fi
+
+if [ -x $program ]; then
+    # run the program $repetitions times with no output...
+    for (( i=0; i < $repetitions; i++ )); do
+        ./$program &> /dev/null
+    done
+    exit 0
+else
+    # ... or fail if $program cannot be executed
+    echo "Cannot execute '$program'"
+    exit 2
+fi
